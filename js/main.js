@@ -420,12 +420,41 @@
       };
       if (fine) fcta.addEventListener('pointermove', function (e) {
         var now = Date.now();
-        if (now - lastRipple < 180 || e.target.closest('a,button')) return;
+        if (now - lastRipple < 160) return;
         lastRipple = now;
         drop(e, false);
       });
-      fcta.addEventListener('pointerdown', function (e) { if (!e.target.closest('a,button')) drop(e, true); });
+      fcta.addEventListener('pointerdown', function (e) { drop(e, true); });
     }
+  }
+
+  /* Page-wide ripple trail (the pool section keeps its own water ripples) */
+  if (!reduceMotion && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+    var layer = document.createElement('div');
+    layer.className = 'page-ripples';
+    layer.setAttribute('aria-hidden', 'true');
+    root.appendChild(layer);
+    var lastPR = 0;
+    var spawn = function (x, y, big) {
+      var i = document.createElement('i');
+      if (big) i.className = 'big';
+      i.style.left = x + 'px';
+      i.style.top = y + 'px';
+      i.addEventListener('animationend', function () { i.remove(); });
+      layer.appendChild(i);
+    };
+    var inPool = function (t) { return t && t.closest && t.closest('.fcta'); };
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse' || inPool(e.target)) return;
+      var now = Date.now();
+      if (now - lastPR < 160) return;
+      lastPR = now;
+      spawn(e.clientX, e.clientY, false);
+    }, { passive: true });
+    document.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || inPool(e.target)) return;
+      spawn(e.clientX, e.clientY, true);
+    });
   }
 
   /* Back to top: progress ring + launch */

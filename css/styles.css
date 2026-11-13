@@ -577,6 +577,9 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .fcta-ripples i{position:absolute;width:160px;height:160px;margin:-80px 0 0 -80px;border-radius:50%;border:1.5px solid rgba(255,255,255,.55);box-shadow:0 0 18px rgba(168,198,108,.25),inset 0 0 12px rgba(255,255,255,.15);animation:bsRipple 1.6s cubic-bezier(.2,.6,.3,1) forwards}
 .bs .fcta-ripples i.big{width:320px;height:320px;margin:-160px 0 0 -160px;border-color:rgba(168,198,108,.8);animation-duration:2.2s}
 @keyframes bsRipple{from{transform:scale(.08);opacity:1}to{transform:scale(1);opacity:0}}
+.bs .page-ripples{position:fixed;inset:0;z-index:64;pointer-events:none;overflow:hidden}
+.bs .page-ripples i{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:1.5px solid rgba(120,162,47,.6);box-shadow:0 0 14px rgba(120,162,47,.2);animation:bsRipple 1.4s cubic-bezier(.2,.6,.3,1) forwards}
+.bs .page-ripples i.big{width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(120,162,47,.75);animation-duration:2s}
 .bs .fcta-em{position:relative;display:inline-block}
 .bs .fcta-swash{position:absolute;left:-2%;right:-2%;bottom:-.12em;width:104%;height:.32em;overflow:visible}
 .bs .fcta-swash path{fill:none;stroke:var(--green);stroke-width:5;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:0}
