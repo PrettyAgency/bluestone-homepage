@@ -399,7 +399,29 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .step p{margin:0;font-size:15px;line-height:1.6;color:var(--slate)}
 /* reviews */
 .bs .reviews{background:var(--stone)}
-.bs .rev-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.bs .reviews .sec-head{align-items:end}
+.bs .rev-nav{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.bs .rev-count{font:600 18px/1 var(--f-display);color:var(--slate);margin-right:10px;font-variant-numeric:tabular-nums}
+.bs .rev-count b{font-size:30px;color:var(--navy);font-weight:600}
+.bs .rev-btn{width:58px;height:58px;border-radius:50%;border:1.5px solid var(--navy);background:transparent;color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s,color .3s,border-color .3s,transform .4s var(--ease),opacity .3s}
+.bs .rev-btn:hover:not(:disabled){background:var(--navy);color:#fff}
+.bs .rev-btn[data-rev-next]:hover:not(:disabled) svg{animation:bsNudgeR .5s var(--ease)}
+.bs .rev-btn[data-rev-prev]:hover:not(:disabled) svg{animation:bsNudgeL .5s var(--ease)}
+.bs .rev-btn:disabled{opacity:.3;cursor:default}
+.bs .rev-btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+@keyframes bsNudgeR{50%{transform:translateX(5px)}}
+@keyframes bsNudgeL{50%{transform:translateX(-5px)}}
+.bs .rev-car{position:relative}
+.bs .rev-track{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 40px) / 3);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:6px 2px 30px;margin:-6px -2px 0;overscroll-behavior-x:contain;cursor:grab}
+.bs .rev-track::-webkit-scrollbar{display:none}
+.bs .rev-track.is-drag{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.bs .rev-track:focus-visible{outline:3px solid var(--green);outline-offset:4px}
+.bs .rev-track .rev{scroll-snap-align:start;margin:0;transition:transform .5s var(--ease),opacity .5s,box-shadow .5s}
+.bs .rev-track .rev.is-out{opacity:.45;transform:scale(.97)}
+.bs .rev-ph blockquote{font-size:19px}
+.bs .rev-bar{height:3px;background:rgba(15,42,79,.1);border-radius:3px;overflow:hidden;margin-top:6px}
+.bs .rev-prog{display:block;height:100%}
+.bs .rev-prog i{display:block;height:100%;width:var(--rw,30%);transform:translateX(var(--rx,0%));background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;transition:transform .4s var(--ease),width .4s}
 .bs .rev{background:#fff;padding:36px 32px;position:relative;border:1.5px dashed #C9BFAE;display:flex;flex-direction:column;min-height:300px}
 .bs .rev .q{font:600 96px/.6 var(--f-display);color:var(--green);height:44px}
 .bs .rev blockquote{margin:16px 0 24px;font:400 21px/1.4 var(--f-display);color:#8A8478;font-style:italic;flex:1}
@@ -731,7 +753,7 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .deck-media .cap{left:16px}
 .bs .steps{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:48px}
 .bs .steps::before{display:none}
-.bs .rev-grid{grid-template-columns:1fr 1fr 1fr}
+.bs .rev-track{grid-auto-columns:calc((100% - 20px) / 2)}
 .bs .gi.g0{grid-column:span 12}.bs .gi.g1,.bs .gi.g2,.bs .gi.g3,.bs .gi.g4,.bs .gi.g5{grid-column:span 6;grid-row:span 1}
 .bs .gi.g6,.bs .gi.g7,.bs .gi.g9,.bs .gi.g10,.bs .gi.g11{grid-column:span 6;grid-row:span 1}.bs .gi.g8{grid-column:span 12;grid-row:span 1}
 .bs .gi{grid-column:span 6}
@@ -813,7 +835,10 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .step::before{content:"";position:absolute;left:27px;top:56px;bottom:0;width:1px;background:var(--line)}
 .bs .step:last-child::before{display:none}
 .bs .step .num{width:56px;height:56px;font-size:20px;margin:0}
-.bs .rev-grid{grid-template-columns:repeat(3,85%);overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 8px;gap:12px}
+.bs .rev-track{grid-auto-columns:86%;gap:12px;margin:-6px -16px 0;padding:6px 16px 24px;scroll-padding:0 16px}
+.bs .rev-btn{width:48px;height:48px}
+.bs .rev-count b{font-size:24px}
+.bs .rev-nav{justify-content:flex-start}
 .bs .rev{scroll-snap-align:start;min-height:260px;padding:28px 22px}
 .bs .gal{grid-auto-rows:170px;gap:10px}
 .bs .gi,.bs .gi.g0,.bs .gi.g1,.bs .gi.g2,.bs .gi.g3,.bs .gi.g4,.bs .gi.g5,.bs .gi.g6,.bs .gi.g7,.bs .gi.g8,.bs .gi.g9,.bs .gi.g10,.bs .gi.g11{grid-column:span 6;grid-row:span 1}
