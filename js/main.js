@@ -206,21 +206,88 @@
   var galFilter = 'All';
   var galLoaded = false;
   function renderGallery() {
+    var n = 0;
     tiles.forEach(function (t, i) {
       var show = (galFilter === 'All' || t.getAttribute('data-cat') === galFilter) &&
         (galLoaded || !t.hasAttribute('data-more'));
       t.hidden = !show;
       t.className = 'gi' + (galFilter === 'All' ? ' g' + i : '');
+      if (show) t.style.setProperty('--n', n++);
     });
   }
   filterBtns.forEach(function (b) {
     b.addEventListener('click', function () {
       galFilter = b.getAttribute('data-filter');
       filterBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-      if (gal) gal.classList.remove('is-more');
-      renderGallery();
+      if (gal) {
+        gal.classList.remove('is-more', 'is-shuffle');
+        renderGallery();
+        void gal.offsetWidth;
+        gal.classList.add('is-shuffle');
+      } else renderGallery();
     });
   });
+  renderGallery();
+
+  /* Gallery motion: entrance wipe, 3D tilt + glare, "View" cursor bubble, image parallax */
+  if (gal && !reduceMotionEarly()) {
+    gal.classList.add('js-gal');
+    if ('IntersectionObserver' in window) {
+      var gio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            gal.classList.add('is-in');
+            setTimeout(function () { gal.classList.add('wiped'); }, 2200);
+            gio.disconnect();
+          }
+        });
+      }, { threshold: 0.15 });
+      gio.observe(gal);
+    } else gal.classList.add('is-in', 'wiped');
+
+    var finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+    if (finePointer) {
+      var bubble = document.createElement('div');
+      bubble.className = 'gal-cursor';
+      bubble.setAttribute('aria-hidden', 'true');
+      bubble.innerHTML = 'View <svg width="14" height="10" viewBox="0 0 16 12"><path d="M0 6h14M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2"></path></svg>';
+      root.appendChild(bubble);
+      tiles.forEach(function (t) {
+        t.addEventListener('pointermove', function (e) {
+          var r = t.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+          t.style.setProperty('--ry', ((px - 0.5) * 8).toFixed(2) + 'deg');
+          t.style.setProperty('--rx', ((0.5 - py) * 8).toFixed(2) + 'deg');
+          t.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+          t.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+          bubble.style.setProperty('--cx', e.clientX + 'px');
+          bubble.style.setProperty('--cy', e.clientY + 'px');
+          bubble.classList.add('is-on');
+        });
+        t.addEventListener('pointerleave', function () {
+          t.style.setProperty('--rx', '0deg');
+          t.style.setProperty('--ry', '0deg');
+          bubble.classList.remove('is-on');
+        });
+      });
+    }
+
+    var galTick = false;
+    var parallax = function () {
+      galTick = false;
+      var vh = window.innerHeight;
+      tiles.forEach(function (t) {
+        if (t.hidden) return;
+        var r = t.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        var p = ((r.top + r.height / 2) - vh / 2) / vh; /* -1..1 around viewport centre */
+        t.style.setProperty('--py', (p * -22).toFixed(1) + 'px');
+      });
+    };
+    window.addEventListener('scroll', function () { if (!galTick) { galTick = true; requestAnimationFrame(parallax); } }, { passive: true });
+    parallax();
+  }
+  function reduceMotionEarly() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   /* Load more projects, then swap the button for the portfolio link */
   if (workMore && gal) {
     workMore.addEventListener('click', function () {
