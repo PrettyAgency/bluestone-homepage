@@ -501,7 +501,7 @@
         i.addEventListener('animationend', function () { i.remove(); });
         ripples.appendChild(i);
       };
-      fcta.addEventListener('pointerdown', function (e) { drop(e, true); drop(e, false); });
+      fcta.addEventListener('pointerdown', function (e) { drop(e, true); });
     }
   }
 
@@ -523,7 +523,6 @@
     document.addEventListener('pointerdown', function (e) {
       if (inPool(e.target)) return;
       spawn(e.clientX, e.clientY, true);
-      setTimeout(function () { spawn(e.clientX, e.clientY, false); }, 120);
     }, { passive: true });
   }
 
