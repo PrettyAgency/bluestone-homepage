@@ -171,4 +171,131 @@
       });
     });
   });
+
+  /* FAQ: topic pills, live search with highlighting, show-more, deep links */
+  var faq = root.querySelector('[data-faq]');
+  if (faq) {
+    var LIMIT = 10;
+    var items = Array.prototype.slice.call(faq.querySelectorAll('.faq-list details'));
+    var pills = faq.querySelectorAll('[data-faq-cat]');
+    var q = document.getElementById('faq-q');
+    var box = faq.querySelector('.faq-search');
+    var clearBtn = faq.querySelector('.faq-clear');
+    var status = faq.querySelector('[data-faq-status]');
+    var empty = faq.querySelector('[data-faq-empty]');
+    var more = faq.querySelector('[data-faq-more]');
+    var cat = 'all';
+    var expanded = false;
+    var searchTimer;
+    items.forEach(function (d) {
+      var t = d.querySelector('.fq-t');
+      t.setAttribute('data-raw', t.textContent);
+      d.setAttribute('data-text', d.textContent.toLowerCase());
+    });
+    function escHtml(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    function highlight(el, terms) {
+      var raw = el.getAttribute('data-raw');
+      if (!terms.length) { el.textContent = raw; return; }
+      var re = new RegExp('(' + terms.map(escRe).join('|') + ')', 'gi');
+      el.innerHTML = raw.split(re).map(function (part, i) { return i % 2 ? '<mark>' + escHtml(part) + '</mark>' : escHtml(part); }).join('');
+    }
+    function render() {
+      var raw = q.value.trim();
+      var terms = raw.toLowerCase().split(/\s+/).filter(Boolean);
+      var filtering = terms.length > 0 || cat !== 'all';
+      var matches = 0;
+      var shown = 0;
+      items.forEach(function (d) {
+        var ok = (cat === 'all' || d.getAttribute('data-cat') === cat) &&
+          terms.every(function (t) { var tx = d.getAttribute('data-text'); return tx.indexOf(t) > -1 || (t.length > 3 && t.slice(-1) === 's' && tx.indexOf(t.slice(0, -1)) > -1); });
+        if (ok) matches++;
+        var visible = ok && (filtering || expanded || matches <= LIMIT);
+        d.hidden = !visible;
+        if (visible) shown++;
+        highlight(d.querySelector('.fq-t'), terms);
+      });
+      faq.setAttribute('data-cat', cat);
+      box.classList.toggle('has-q', !!raw);
+      clearBtn.hidden = !raw;
+      empty.hidden = matches > 0;
+      more.parentNode.hidden = filtering || expanded || matches <= LIMIT;
+      var topic = cat === 'all' ? '' : ' in ' + faq.querySelector('[data-faq-cat="' + cat + '"]').firstChild.textContent.trim();
+      if (raw) status.innerHTML = '<b>' + matches + '</b> ' + (matches === 1 ? 'answer' : 'answers') + ' for &ldquo;' + escHtml(raw) + '&rdquo;' + topic;
+      else if (cat !== 'all') status.innerHTML = '<b>' + matches + '</b> questions' + topic;
+      else status.innerHTML = 'Showing <b>' + shown + '</b> of ' + items.length + ' questions';
+    }
+    pills.forEach(function (p) {
+      p.addEventListener('click', function () {
+        cat = p.getAttribute('data-faq-cat');
+        pills.forEach(function (x) { x.setAttribute('aria-pressed', x === p ? 'true' : 'false'); });
+        if (p.scrollIntoView && p.parentNode.scrollWidth > p.parentNode.clientWidth) p.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        render();
+        track('faq_filter', { topic: cat });
+      });
+    });
+    q.addEventListener('input', function () {
+      render();
+      clearTimeout(searchTimer);
+      if (q.value.trim().length > 2) searchTimer = setTimeout(function () { track('faq_search', { search_term: q.value.trim() }); }, 1200);
+    });
+    function clearSearch() { q.value = ''; render(); q.focus(); }
+    clearBtn.addEventListener('click', clearSearch);
+    faq.querySelector('[data-faq-reset]').addEventListener('click', function () {
+      cat = 'all';
+      pills.forEach(function (x) { x.setAttribute('aria-pressed', x.getAttribute('data-faq-cat') === 'all' ? 'true' : 'false'); });
+      clearSearch();
+    });
+    q.addEventListener('keydown', function (e) { if (e.key === 'Escape' && q.value) { e.preventDefault(); clearSearch(); } });
+    more.addEventListener('click', function () {
+      expanded = true;
+      render();
+      var next = items[LIMIT];
+      if (next) next.querySelector('summary').focus();
+    });
+    items.forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (d.open) track('faq_open', { question: d.querySelector('.fq-t').getAttribute('data-raw') });
+      });
+    });
+    /* Press "/" anywhere to jump to the FAQ search */
+    document.addEventListener('keydown', function (e) {
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+      e.preventDefault();
+      q.focus({ preventScroll: true });
+      faq.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    /* Deep links: #faq-12 opens and highlights that question */
+    function openFromHash() {
+      var m = /^#faq-(\d+)$/.exec(location.hash);
+      var d = m && document.getElementById('faq-' + m[1]);
+      if (!d) return;
+      expanded = true; cat = 'all'; q.value = '';
+      pills.forEach(function (x) { x.setAttribute('aria-pressed', x.getAttribute('data-faq-cat') === 'all' ? 'true' : 'false'); });
+      render();
+      d.open = true;
+      d.classList.remove('is-target'); void d.offsetWidth; d.classList.add('is-target');
+      d.scrollIntoView({ block: 'start' });
+    }
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
+    /* Typewriter placeholder cycling through real questions */
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      var samples = ['retaining wall permit', 'soggy yard after rain', 'turf for Bendigo', 'pool paving', 'deck permit', 'staging the work'];
+      var base = q.getAttribute('placeholder');
+      var si = 0, ci = 0, dir = 1, hold = 0;
+      setInterval(function () {
+        if (document.activeElement === q || q.value) { q.setAttribute('placeholder', base); return; }
+        var word = samples[si];
+        if (hold > 0) { hold--; return; }
+        ci += dir;
+        if (ci >= word.length) { dir = -1; hold = 22; }
+        else if (ci <= 0) { dir = 1; ci = 0; si = (si + 1) % samples.length; hold = 4; }
+        q.setAttribute('placeholder', ci > 0 ? 'Try “' + word.slice(0, ci) + '”' : base);
+      }, 70);
+    }
+    render();
+  }
 })();
