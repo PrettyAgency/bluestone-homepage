@@ -616,8 +616,9 @@
   var topo = root.querySelector('.about-topo svg');
   if (topo && !reduceMotion && topo.animate) {
     var NS2 = 'http://www.w3.org/2000/svg';
+    var comets = [];
     topo.querySelectorAll('.at-g path').forEach(function (p, i) {
-      if (i % 2) return; /* every other ring keeps it calm */
+      if (i % 3) return; /* a few comets only: each one repaints the layer */
       var m = /scale\(([\d.]+)\)/.exec(p.getAttribute('transform') || '');
       var sc = m ? parseFloat(m[1]) : 1;
       var len = p.getTotalLength();
@@ -630,21 +631,26 @@
       c.setAttribute('stroke-dasharray', seg + ' ' + (len - seg));
       p.parentNode.appendChild(c);
       var dir = i % 4 === 0 ? 1 : -1;
-      c.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: dir * -len }], {
-        duration: 9000 + i * 1300, iterations: Infinity, delay: -i * 700
-      });
+      comets.push(c.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: dir * -len }], {
+        duration: 11000 + i * 1300, iterations: Infinity, delay: -i * 700
+      }));
     });
     var about = root.querySelector('.about');
-    var layers = topo.querySelectorAll('.at-layer');
+    var topoWrap = topo.parentNode;
+    /* only animate while the section is on screen */
+    if ('IntersectionObserver' in window && about) {
+      new IntersectionObserver(function (en) {
+        var vis = en[0].isIntersecting;
+        about.classList.toggle('is-vis', vis);
+        comets.forEach(function (a) { if (vis) a.play(); else a.pause(); });
+      }, { rootMargin: '100px 0px' }).observe(about);
+    } else if (about) about.classList.add('is-vis');
     if (about && window.matchMedia('(pointer: fine)').matches) {
       about.addEventListener('pointermove', function (e) {
         var r = about.getBoundingClientRect();
         var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-        layers.forEach(function (l, k) {
-          var f = k ? -18 : 26;
-          l.style.setProperty('--tx', (px * f).toFixed(1) + 'px');
-          l.style.setProperty('--ty', (py * f).toFixed(1) + 'px');
-        });
+        topoWrap.style.setProperty('--tx', (px * 24).toFixed(1) + 'px');
+        topoWrap.style.setProperty('--ty', (py * 24).toFixed(1) + 'px');
       });
     }
   }
