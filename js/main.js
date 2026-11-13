@@ -160,17 +160,70 @@
   /* Gallery filter */
   var filterBtns = root.querySelectorAll('[data-filter]');
   var tiles = root.querySelectorAll('.gal .gi');
+  var gal = document.getElementById('work-gal');
+  var workMore = root.querySelector('[data-work-more]');
+  var workPortfolio = root.querySelector('[data-work-portfolio]');
+  var galFilter = 'All';
+  var galLoaded = false;
+  function renderGallery() {
+    tiles.forEach(function (t, i) {
+      var show = (galFilter === 'All' || t.getAttribute('data-cat') === galFilter) &&
+        (galLoaded || !t.hasAttribute('data-more'));
+      t.hidden = !show;
+      t.className = 'gi' + (galFilter === 'All' ? ' g' + i : '');
+    });
+  }
   filterBtns.forEach(function (b) {
     b.addEventListener('click', function () {
-      var f = b.getAttribute('data-filter');
+      galFilter = b.getAttribute('data-filter');
       filterBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-      tiles.forEach(function (t, i) {
-        var show = f === 'All' || t.getAttribute('data-cat') === f;
-        t.hidden = !show;
-        t.className = 'gi' + (f === 'All' ? ' g' + i : '');
-      });
+      if (gal) gal.classList.remove('is-more');
+      renderGallery();
     });
   });
+  /* Load more projects, then swap the button for the portfolio link */
+  if (workMore && gal) {
+    workMore.addEventListener('click', function () {
+      galLoaded = true;
+      gal.classList.add('is-more');
+      renderGallery();
+      workMore.hidden = true;
+      if (workPortfolio) {
+        workPortfolio.hidden = false;
+        workPortfolio.classList.add('is-in');
+      }
+      var firstNew = gal.querySelector('.gi[data-more]:not([hidden])');
+      if (firstNew) firstNew.focus({ preventScroll: true });
+      track('portfolio_load_more', { filter: galFilter });
+    });
+  }
+
+  /* Services: load more */
+  var svcMore = root.querySelector('[data-svc-more]');
+  var svcExtra = document.getElementById('svc-extra');
+  if (svcMore && svcExtra) {
+    var moreK = svcMore.querySelector('[data-more-k]');
+    var moreL = svcMore.querySelector('[data-more-l]');
+    var kText = moreK.textContent, lText = moreL.innerHTML;
+    svcMore.addEventListener('click', function () {
+      var open = svcMore.getAttribute('aria-expanded') !== 'true';
+      svcMore.setAttribute('aria-expanded', open ? 'true' : 'false');
+      svcExtra.hidden = !open;
+      if (open) {
+        svcExtra.classList.remove('is-in'); void svcExtra.offsetWidth; svcExtra.classList.add('is-in');
+        moreK.textContent = 'All 12 services showing';
+        moreL.textContent = 'Show fewer services';
+        var first = svcExtra.querySelector('.svc');
+        if (first) first.focus({ preventScroll: true });
+        svcExtra.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        track('services_load_more', {});
+      } else {
+        moreK.textContent = kText;
+        moreL.innerHTML = lText;
+        svcMore.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
 
   /* FAQ: topic pills, live search with highlighting, show-more, deep links */
   var faq = root.querySelector('[data-faq]');
