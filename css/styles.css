@@ -633,7 +633,7 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 @media (prefers-reduced-motion: reduce){.bs .totop{transition:opacity .2s}.bs .totop:hover .totop-a svg,.bs .totop.is-flying .totop-a svg{animation:none}}
 .bs .fcta p{color:#E3E9F0;font-size:clamp(17px,1.4vw,20px);max-width:52ch;margin:28px 0 0}
 /* footer */
-.bs .ftr{background:var(--deep);color:var(--mist);padding:clamp(72px,8vw,120px) 0 0;overflow:hidden;position:relative}
+.bs .ftr{background:var(--deep);color:var(--mist);padding:clamp(72px,8vw,120px) 0 96px;overflow:hidden;position:relative}
 .bs .ftr-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px;padding-bottom:56px;border-bottom:1px solid rgba(255,255,255,.12)}
 .bs .ftr-top h2{font-size:clamp(40px,5.4vw,84px);color:#fff;max-width:14ch}
 .bs .ftr-top h2 .fw{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
@@ -896,7 +896,7 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .dock-quote{height:34px;padding:0 12px;font-size:10.5px;letter-spacing:.06em;gap:6px}
 .bs .dock-quote svg{display:none}
 .bs .totop{bottom:58px;width:44px;height:44px}
-.bs .ftr{padding-bottom:56px}
+.bs .ftr{padding-bottom:84px}
 }
 @media (prefers-reduced-motion: reduce){.bs .dock{transition:opacity .2s}}
 /* before / after: creative */
