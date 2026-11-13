@@ -120,28 +120,35 @@
 </div>
 <form id="quote-form" aria-labelledby="q-title" novalidate action="#" method="post">
 <h2 id="q-title">Tell us about your project</h2>
-<p class="qsub">Request a free landscaping quote. Two fields required.</p>
+<p class="qsub">Request a free landscaping quote. Name and phone required.</p>
 <div class="qrow">
 <div class="fld">
-<label for="q-name">Your name <b aria-hidden="true">*</b></label>
-<input id="q-name" name="name" type="text" autocomplete="name" aria-required="true" aria-invalid="false" aria-describedby="e-name">
-<p class="err" id="e-name" hidden>Please enter your name.</p>
+<label for="q-first">First name (required)</label>
+<input id="q-first" name="first_name" type="text" autocomplete="given-name" placeholder="First name *" aria-required="true" aria-invalid="false" aria-describedby="e-first">
+<p class="err" id="e-first" hidden>Please enter your first name.</p>
 </div>
 <div class="fld">
-<label for="q-phone">Phone number <b aria-hidden="true">*</b></label>
-<input id="q-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-required="true" aria-invalid="false" aria-describedby="e-phone">
+<label for="q-last">Last name (required)</label>
+<input id="q-last" name="last_name" type="text" autocomplete="family-name" placeholder="Last name *" aria-required="true" aria-invalid="false" aria-describedby="e-last">
+<p class="err" id="e-last" hidden>Please enter your last name.</p>
+</div>
+</div>
+<div class="qrow">
+<div class="fld">
+<label for="q-phone">Phone number (required)</label>
+<input id="q-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone number *" aria-required="true" aria-invalid="false" aria-describedby="e-phone">
 <p class="err" id="e-phone" hidden>Please enter a phone number.</p>
 </div>
-</div>
 <div class="fld">
-<label for="q-email">Email address <small>(optional)</small></label>
-<input id="q-email" name="email" type="text" inputmode="email" autocomplete="email" aria-invalid="false" aria-describedby="e-email">
+<label for="q-email">Email address (optional)</label>
+<input id="q-email" name="email" type="text" inputmode="email" autocomplete="email" placeholder="Email (optional)" aria-invalid="false" aria-describedby="e-email">
 <p class="err" id="e-email" hidden>That email address doesn't look right.</p>
+</div>
 </div>
 <div class="fld">
 <label for="q-service">What do you need?</label>
 <select id="q-service" name="service">
-<option value="">Choose a service</option>
+<option value="">What do you need?</option>
 <option>Retaining walls</option>
 <option>Paving</option>
 <option>Turf installation</option>
@@ -152,8 +159,8 @@
 </select>
 </div>
 <div class="fld">
-<label for="q-msg">Tell us about your project <small>(optional)</small></label>
-<textarea id="q-msg" name="message" rows="3"></textarea>
+<label for="q-msg">Tell us about your project (optional)</label>
+<textarea id="q-msg" name="message" rows="3" placeholder="Tell us about your project (optional)"></textarea>
 </div>
 <div class="hp" aria-hidden="true"><label for="q-web">Leave this empty</label><input id="q-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>
 <button class="btn btn-primary qbtn" type="submit"><span class="spin" aria-hidden="true" hidden></span><span data-label>Send My Quote Request</span> <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M0 6h14M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2"></path></svg></button>

@@ -70,7 +70,7 @@
     a.addEventListener('click', function () {
       var card = document.getElementById('quote');
       setTimeout(function () {
-        var first = document.getElementById('q-name');
+        var first = document.getElementById('q-first');
         (first && !first.closest('[hidden]') ? first : card).focus({ preventScroll: true });
       }, 450);
     });
@@ -93,7 +93,8 @@
       if (msg) { err.textContent = msg; err.hidden = false; err.setAttribute('role', 'alert'); }
       else { err.hidden = true; err.removeAttribute('role'); }
     }
-    ['name', 'phone', 'email'].forEach(function (n) {
+    var fields = ['first', 'last', 'phone', 'email'];
+    fields.forEach(function (n) {
       var input = document.getElementById('q-' + n);
       if (input) input.addEventListener('input', function () { setError(n, ''); });
     });
@@ -101,16 +102,18 @@
       e.preventDefault();
       if (btn.disabled) return;
       if (form.website && form.website.value) return; /* honeypot */
-      var name = document.getElementById('q-name').value.trim();
+      var name = document.getElementById('q-first').value.trim();
+      var last = document.getElementById('q-last').value.trim();
       var digits = form.phone.value.replace(/[^0-9]/g, '');
       var email = form.email.value.trim();
       var errors = {};
-      if (!name) errors.name = 'Please enter your name.';
+      if (!name) errors.first = 'Please enter your first name.';
+      if (!last) errors.last = 'Please enter your last name.';
       if (!digits) errors.phone = 'Please enter a phone number.';
       else if (digits.length < 8 || digits.length > 12) errors.phone = 'Please check the phone number, for example 0400 000 000.';
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "That email address doesn't look right.";
-      ['name', 'phone', 'email'].forEach(function (n) { setError(n, errors[n] || ''); });
-      var firstBad = ['name', 'phone', 'email'].filter(function (n) { return errors[n]; })[0];
+      fields.forEach(function (n) { setError(n, errors[n] || ''); });
+      var firstBad = fields.filter(function (n) { return errors[n]; })[0];
       if (firstBad) { document.getElementById('q-' + firstBad).focus(); return; }
 
       /* Loading state. Replace this timeout with the real form plugin submission. */
@@ -119,7 +122,7 @@
       btn.querySelector('.spin').hidden = false;
       btn.querySelector('[data-label]').textContent = 'Sending…';
       setTimeout(function () {
-        ok.querySelector('[data-first-name]').textContent = name.split(' ')[0] || 'there';
+        ok.querySelector('[data-first-name]').textContent = name || 'there';
         form.hidden = true;
         ok.hidden = false;
         btn.disabled = false;
@@ -134,7 +137,7 @@
     var reset = ok && ok.querySelector('[data-reset]');
     if (reset) reset.addEventListener('click', function () {
       form.reset(); started = false; ok.hidden = true; form.hidden = false;
-      document.getElementById('q-name').focus();
+      document.getElementById('q-first').focus();
     });
   }
 
