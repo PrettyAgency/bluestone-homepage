@@ -797,7 +797,9 @@
       var y = window.scrollY, vh = window.innerHeight;
       var menuOpen = menu && !menu.hidden;
       var nearEnd = y + vh > document.documentElement.scrollHeight - 40;
-      dock.classList.toggle('is-on', y > vh * 0.6 && !menuOpen);
+      var legal = root.querySelector('.ftr-legal');
+      var legalIn = legal && legal.getBoundingClientRect().top < vh - 8;
+      dock.classList.toggle('is-on', y > vh * 0.6 && !menuOpen && !legalIn);
       var cur = null;
       dockSecs.forEach(function (s) { if (s.getBoundingClientRect().top < vh * 0.45) cur = s.id; });
       if (nearEnd) cur = null;
