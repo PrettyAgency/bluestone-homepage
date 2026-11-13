@@ -452,6 +452,151 @@
     });
   }
 
+  /* Trust bar: stripe sweep, hill draw, count-up, cursor spotlight */
+  var trust = root.querySelector('[data-trust]');
+  if (trust && !reduceMotion) {
+    trust.classList.add('js-trust');
+    var counters = trust.querySelectorAll('[data-count]');
+    counters.forEach(function (el) { el.textContent = '0'; });
+    var runCount = function () {
+      counters.forEach(function (el) {
+        var to = parseInt(el.getAttribute('data-count'), 10), t0 = null, dur = 1600;
+        var step = function (ts) {
+          if (!t0) t0 = ts;
+          var k = Math.min(1, (ts - t0) / dur);
+          el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        setTimeout(function () { requestAnimationFrame(step); }, 400);
+      });
+    };
+    var goTrust = function () { trust.classList.add('is-live'); runCount(); };
+    if ('IntersectionObserver' in window) {
+      var tio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { goTrust(); tio.disconnect(); } });
+      }, { threshold: 0.4 });
+      tio.observe(trust);
+    } else goTrust();
+    trust.addEventListener('pointermove', function (e) {
+      var r = trust.getBoundingClientRect();
+      trust.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+      trust.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+    });
+    trust.addEventListener('pointerleave', function () { trust.style.setProperty('--gx', '-400px'); });
+  }
+
+  /* Service cards: 3D tilt (individual rotate, so it composes with scroll reveals), glare, magnetic arrow */
+  if (!reduceMotion && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+    root.querySelectorAll('.svc').forEach(function (card) {
+      var arr = card.querySelector('.arr');
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        var mag = Math.min(1, Math.sqrt(px * px + py * py) * 2);
+        card.style.setProperty('--tax', (-py).toFixed(3));
+        card.style.setProperty('--tay', (px).toFixed(3));
+        card.style.setProperty('--tang', (mag * 5).toFixed(2) + 'deg');
+        card.style.setProperty('--mx', ((px + 0.5) * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((py + 0.5) * 100).toFixed(1) + '%');
+        if (arr) {
+          var ar = arr.getBoundingClientRect();
+          var dx = e.clientX - (ar.left + ar.width / 2), dy = e.clientY - (ar.top + ar.height / 2);
+          var d = Math.sqrt(dx * dx + dy * dy);
+          var pull = d < 160 ? (1 - d / 160) : 0;
+          card.style.setProperty('--axm', (dx * pull * 0.35).toFixed(1) + 'px');
+          card.style.setProperty('--aym', (dy * pull * 0.35).toFixed(1) + 'px');
+        }
+      });
+      card.addEventListener('pointerleave', function () {
+        ['--tang', '--axm', '--aym'].forEach(function (p) { card.style.setProperty(p, p === '--tang' ? '0deg' : '0px'); });
+      });
+    });
+  }
+
+  /* About: survey comets orbiting the contour rings, mouse drift */
+  var topo = root.querySelector('.about-topo svg');
+  if (topo && !reduceMotion && topo.animate) {
+    var NS2 = 'http://www.w3.org/2000/svg';
+    topo.querySelectorAll('.at-g path').forEach(function (p, i) {
+      if (i % 2) return; /* every other ring keeps it calm */
+      var m = /scale\(([\d.]+)\)/.exec(p.getAttribute('transform') || '');
+      var sc = m ? parseFloat(m[1]) : 1;
+      var len = p.getTotalLength();
+      var seg = len * 0.09;
+      var c = document.createElementNS(NS2, 'path');
+      c.setAttribute('d', p.getAttribute('d'));
+      c.setAttribute('transform', p.getAttribute('transform'));
+      c.setAttribute('class', 'at-comet');
+      c.setAttribute('stroke-width', (2.2 / sc).toFixed(3));
+      c.setAttribute('stroke-dasharray', seg + ' ' + (len - seg));
+      p.parentNode.appendChild(c);
+      var dir = i % 4 === 0 ? 1 : -1;
+      c.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: dir * -len }], {
+        duration: 9000 + i * 1300, iterations: Infinity, delay: -i * 700
+      });
+    });
+    var about = root.querySelector('.about');
+    var layers = topo.querySelectorAll('.at-layer');
+    if (about && window.matchMedia('(pointer: fine)').matches) {
+      about.addEventListener('pointermove', function (e) {
+        var r = about.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        layers.forEach(function (l, k) {
+          var f = k ? -18 : 26;
+          l.style.setProperty('--tx', (px * f).toFixed(1) + 'px');
+          l.style.setProperty('--ty', (py * f).toFixed(1) + 'px');
+        });
+      });
+    }
+  }
+
+  /* Featured project: swap photos, timeline progress, parallax */
+  var feat = root.querySelector('.feat');
+  if (feat) {
+    var swapBtn = feat.querySelector('.feat-inset');
+    if (swapBtn) swapBtn.addEventListener('click', function () {
+      var on = feat.classList.toggle('is-swapped');
+      swapBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      track('featured_swap', { swapped: on });
+    });
+    var story = feat.querySelector('[data-story]');
+    var steps = story ? story.querySelectorAll(':scope > div') : [];
+    var media = feat.querySelector('.feat-media');
+    var featTick = false;
+    var featScroll = function () {
+      featTick = false;
+      var vh = window.innerHeight;
+      if (story) {
+        var sr = story.getBoundingClientRect();
+        var prog = Math.max(0, Math.min(1, (vh * 0.75 - sr.top) / sr.height));
+        story.style.setProperty('--sp', prog.toFixed(3));
+        steps.forEach(function (s) { s.classList.toggle('is-on', s.getBoundingClientRect().top < vh * 0.75); });
+      }
+      if (media && !reduceMotion) {
+        var mr = media.getBoundingClientRect();
+        var p = ((mr.top + mr.height / 2) - vh / 2) / vh;
+        media.style.setProperty('--fy', (p * 40).toFixed(1) + 'px');
+      }
+    };
+    if (reduceMotion && story) { story.style.setProperty('--sp', 1); steps.forEach(function (s) { s.classList.add('is-on'); }); }
+    else {
+      window.addEventListener('scroll', function () { if (!featTick) { featTick = true; requestAnimationFrame(featScroll); } }, { passive: true });
+      featScroll();
+    }
+  }
+
+  /* Footer headline: words rise, last word rotates, cairn stacks */
+  var ftrTop = root.querySelector('[data-ftr]');
+  if (ftrTop && !reduceMotion) {
+    ftrTop.classList.add('js-ftr');
+    if ('IntersectionObserver' in window) {
+      var ftio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { ftrTop.classList.add('is-live'); ftio.disconnect(); } });
+      }, { threshold: 0.4 });
+      ftio.observe(ftrTop);
+    } else ftrTop.classList.add('is-live');
+  }
+
   /* Services: load more */
   var svcMore = root.querySelector('[data-svc-more]');
   var svcExtra = document.getElementById('svc-extra');
