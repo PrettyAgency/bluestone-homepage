@@ -48,9 +48,10 @@
     var ink = nav && nav.querySelector('.nav-ink');
     if (ink) {
       var links = Array.prototype.slice.call(nav.querySelectorAll(':scope > a, :scope > .dd > a'));
-      var current = nav.querySelector('a[aria-current]') || links[0];
+      var current = nav.querySelector('a[aria-current]');
       var moveInk = function (a) {
-        if (!a) return;
+        if (!a) { ink.style.opacity = '0'; return; }
+        ink.style.opacity = '1';
         var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect();
         ink.style.width = (r.width - 24) + 'px';
         ink.style.transform = 'translateX(' + (r.left - nr.left + 12) + 'px)';
