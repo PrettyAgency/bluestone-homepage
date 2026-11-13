@@ -871,24 +871,24 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 
 /* section dock: sticky bottom navigation */
 .bs section[id],.bs #quote{scroll-margin-top:72px}
-.bs .dock{position:fixed;z-index:68;left:50%;bottom:16px;width:min(1040px,calc(100% - 32px));height:52px;display:flex;align-items:center;gap:6px;padding:5px;border-radius:52px;background:rgba(11,30,56,.9);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 16px 40px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.08);transform:translate(-50%,140%);opacity:0;transition:transform .55s cubic-bezier(.3,1.3,.5,1),opacity .4s}
+.bs .dock{position:fixed;z-index:68;left:50%;bottom:16px;width:auto;max-width:calc(100% - 32px);height:40px;display:flex;align-items:center;gap:4px;padding:4px;border-radius:40px;background:rgba(11,30,56,.9);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 16px 40px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.08);transform:translate(-50%,140%);opacity:0;transition:transform .55s cubic-bezier(.3,1.3,.5,1),opacity .4s}
 .bs .dock.is-on{transform:translate(-50%,0);opacity:1}
-.bs .dock-links{position:relative;flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;overscroll-behavior-x:contain;-webkit-mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 22px),transparent);mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 22px),transparent);padding:0 8px}
+.bs .dock-links{position:relative;flex:0 1 auto;min-width:0;height:100%;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;overscroll-behavior-x:contain;-webkit-mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 22px),transparent);mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 22px),transparent);padding:0 6px}
 .bs .dock-links::-webkit-scrollbar{display:none}
-.bs .dock-links a{position:relative;z-index:1;flex:none;display:flex;align-items:center;height:36px;padding:0 13px;border-radius:36px;font:700 13px/1 var(--f-body);letter-spacing:.02em;color:var(--mist);white-space:nowrap;transition:color .3s}
+.bs .dock-links a{position:relative;z-index:1;flex:none;display:flex;align-items:center;height:30px;padding:0 10px;border-radius:30px;font:700 12px/1 var(--f-body);letter-spacing:.02em;color:var(--mist);white-space:nowrap;transition:color .3s}
 .bs .dock-links a:hover{color:#fff}
 .bs .dock-links a.is-active{color:var(--deep)}
 .bs .dock-links a:focus-visible{outline:2px solid var(--green);outline-offset:-2px}
-.bs .dock-ink{position:absolute;z-index:0;top:50%;left:0;height:36px;width:0;margin-top:-18px;border-radius:36px;background:var(--green-l);box-shadow:0 0 18px rgba(168,198,108,.45);opacity:0;transition:transform .5s cubic-bezier(.3,1.3,.5,1),width .5s cubic-bezier(.3,1.3,.5,1),opacity .3s}
+.bs .dock-ink{position:absolute;z-index:0;top:50%;left:0;height:30px;width:0;margin-top:-15px;border-radius:30px;background:var(--green-l);box-shadow:0 0 18px rgba(168,198,108,.45);opacity:0;transition:transform .5s cubic-bezier(.3,1.3,.5,1),width .5s cubic-bezier(.3,1.3,.5,1),opacity .3s}
 .bs .dock-call{display:none;flex:none;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;color:#fff;border:1.5px solid rgba(255,255,255,.3)}
-.bs .dock-quote{flex:none;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:42px;background:var(--green);color:var(--deep);font:900 12px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:background .3s}
+.bs .dock-quote{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:32px;background:var(--green);color:var(--deep);font:900 11px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .3s}
 .bs .dock-quote:hover{background:var(--green-l)}
 .bs .dock-quote:hover svg{animation:bsNudgeR .5s var(--ease)}
-.bs .totop{bottom:84px}
+.bs .totop{bottom:72px}
 @media (max-width:760px){
 .bs .dock{left:0;bottom:0;width:100%;border-radius:14px 14px 0 0;transform:translateY(110%);padding:4px 6px calc(4px + env(safe-area-inset-bottom));height:calc(46px + env(safe-area-inset-bottom));gap:4px}
 .bs .dock.is-on{transform:none}
-.bs .dock-links{padding:0 6px}
+.bs .dock-links{padding:0 6px;flex:1}
 .bs .dock-links a{height:30px;padding:0 10px;font-size:12px}
 .bs .dock-ink{height:30px;margin-top:-15px}
 .bs .dock-call{display:inline-flex;width:34px;height:34px;border-width:1px}
