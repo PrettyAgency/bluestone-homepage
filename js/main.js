@@ -831,7 +831,7 @@
       svcExtra.hidden = !open;
       if (open) {
         svcExtra.classList.remove('is-in'); void svcExtra.offsetWidth; svcExtra.classList.add('is-in');
-        moreK.textContent = 'All 12 services showing';
+        moreK.textContent = 'All 11 services showing';
         moreL.textContent = 'Show fewer services';
         var first = svcExtra.querySelector('.svc');
         if (first) first.focus({ preventScroll: true });

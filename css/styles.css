@@ -40,15 +40,15 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .tlink:hover svg{transform:translateX(5px)}
 .bs .on-dark .tlink{color:#fff}
 /* header */
-.bs .hdr{position:sticky;top:0;z-index:60;height:72px;color:#fff;background:rgba(11,30,56,.94);transition:height .3s var(--ease),transform .5s var(--ease)}
+.bs .hdr{position:sticky;top:0;z-index:60;height:80px;color:#fff;background:rgba(11,30,56,.94);transition:height .3s var(--ease),transform .5s var(--ease)}
 .bs .hdr.is-hidden{transform:translateY(-100%)}
 .bs .hdr.is-scrolled{background:rgba(11,30,56,.97)}
 .bs .hdr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;transform-origin:left;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--blue),var(--green) 60%,var(--green-l));pointer-events:none}
 .bs .hdr-in{height:100%;display:flex;align-items:center;gap:28px;max-width:1440px;margin:0 auto;padding:0 var(--gut)}
 .bs .brand{align-self:center;background:var(--paper);padding:5px 10px;border-radius:12px 0 12px 0;box-shadow:0 8px 22px rgba(0,0,0,.22);display:block;flex:none;transition:transform .4s var(--ease),box-shadow .4s}
 .bs .brand:hover{transform:translateY(-1px) rotate(-1.5deg);box-shadow:0 12px 28px rgba(0,0,0,.3)}
-.bs .brand img{height:50px;width:auto;display:block;transition:height .35s var(--ease)}
-.bs .hdr.is-scrolled .brand img{height:42px}
+.bs .brand img{height:64px;width:auto;display:block;transition:height .35s var(--ease)}
+.bs .hdr.is-scrolled .brand img{height:50px}
 .bs .nav{position:relative;display:flex;align-items:center;gap:6px;margin-left:auto}
 .bs .nav-ink{position:absolute;bottom:4px;left:0;height:2px;width:0;background:var(--green);border-radius:2px;box-shadow:0 0 12px rgba(120,162,47,.8);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.3,1.3,.5,1),width .45s cubic-bezier(.3,1.3,.5,1),opacity .3s}
 .bs .nav.has-ink .nav-ink{opacity:1}
@@ -247,7 +247,7 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 .bs .chip:hover{border-color:var(--blue);color:var(--blue)}
 /* services: load more */
 .bs .svc-extra{margin-top:16px;scroll-margin-top:110px}
-.bs .m1{grid-column:span 5}.bs .m2{grid-column:span 7;grid-row:span 2}.bs .m3{grid-column:span 5}.bs .m4,.bs .m5,.bs .m6{grid-column:span 4}
+.bs .m1{grid-column:span 5;grid-row:span 2}.bs .m2{grid-column:span 7;grid-row:span 2}.bs .m3{grid-column:span 5}.bs .m4,.bs .m5,.bs .m6{grid-column:span 4}
 .bs .m2 h3{font-size:clamp(30px,3.2vw,48px)}
 .bs .svc-extra.is-in .svc{animation:bsSvcIn .9s var(--ease) both;animation-delay:calc(var(--i) * 90ms)}
 .bs .svc-extra.is-in .svc img{animation:bsSvcZoom 1.4s var(--ease) both;animation-delay:calc(var(--i) * 90ms)}
@@ -762,8 +762,8 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 @media (max-width:760px){
 .bs{font-size:16px}
 .bs .hdr{height:64px;animation:none;background:rgba(11,30,56,.95)}
-.bs .brand img{height:44px}
-.bs .hdr.is-scrolled .brand img{height:40px}
+.bs .brand img{height:50px}
+.bs .hdr.is-scrolled .brand img{height:46px}
 .bs .burger,.bs .m-call,.bs .m-quote{width:44px;height:44px}
 .bs .hero{margin-top:-64px}
 .bs .hero-img{object-position:62% 30%;height:62%}
@@ -950,3 +950,17 @@ font-family:var(--f-body);color:var(--ink);background:var(--paper);font-size:17p
 @keyframes bsDrop{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(6px);opacity:0}}
 @keyframes bsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media (max-width:760px){.bs .deck-wx{top:12px;right:12px}.bs .wx{padding:8px 10px 8px 8px}.bs .wx b{font-size:16px}.bs .ba-chips{right:10px;bottom:10px}.bs .ba-chips span{font-size:9.5px;padding:5px 7px}.bs .ba-jump{width:100%}}
+/* hero quote card: a little more compact */
+@media (min-width:1025px){.bs .hero-grid{grid-template-columns:58fr 42fr}}
+.bs .qcard{padding:clamp(20px,2.2vw,30px);max-width:470px;justify-self:end}
+.bs .qcard h2{font-size:clamp(24px,2vw,30px)}
+.bs .qcard .qsub{margin-bottom:14px}
+.bs .fld{margin-bottom:10px}
+.bs .fld input,.bs .fld select{min-height:44px;padding:10px 14px}
+.bs .fld textarea{min-height:64px}
+.bs .qbtn{min-height:48px}
+/* service area: central Victoria ring */
+.bs .map .map-region{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.bs .map .map-region text{font:900 2.7px var(--f-body);letter-spacing:.35px;fill:var(--green-d)}
+@media (prefers-reduced-motion: no-preference){.bs .map.is-live .map-region{animation:bsSpin 120s linear infinite}}
+@media (max-width:1024px){.bs .qcard{max-width:none;justify-self:stretch}}
